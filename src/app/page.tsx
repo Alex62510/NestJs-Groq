@@ -51,7 +51,7 @@ export default function Home() {
   }, [messages]);
 
   return (
-      <div className="h-screen flex items-center justify-center flex-col gap-10 container mx-auto pl-4 pt-6 pr-4">
+      <div className="h-screen flex items-center justify-center flex-col gap-10 container w-full pl-4 pt-6 pr-4">
         <ToastContainer />
         <div className="flex flex-col gap-3 h-[75%] overflow-scroll overflow-x-hidden w-full">
           {messages.map((message, index) => (
@@ -74,10 +74,10 @@ export default function Home() {
                   await handleMessage();
                 }
               }}
-              className="input input-bordered w-full  m-6"
+              className="input input-bordered w-full  px-6"
           />
           <PaperAirplaneIcon
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-500 hover:text-blue-600 cursor-pointer"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-500 hover:text-blue-600 cursor-pointer"
               onClick={async () => await handleMessage()}
           />
         </div>
