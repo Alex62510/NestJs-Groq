@@ -51,7 +51,7 @@ export default function Home() {
   }, [messages]);
 
   return (
-      <div className="h-screen flex items-center justify-center flex-col gap-10 container w-full pl-4 pt-6 pr-4">
+      <div className="h-screen flex items-center justify-center flex-col gap-10 w-full  pl-8 pt-6 pr-8">
         <ToastContainer />
         <div className="flex flex-col gap-3 h-[75%] overflow-scroll overflow-x-hidden w-full">
           {messages.map((message, index) => (
