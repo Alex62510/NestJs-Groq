@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChatCompletionMessage } from '@/app/chat-completion-message.interface';
 import createChatCompletion from '@/app/createChatCompletion';
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { PaperAirplaneIcon, MicrophoneIcon } from "@heroicons/react/24/solid";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatCompletionMessage[]>([]);
   const [message, setMessage] = useState('');
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleMessage = async () => {
@@ -44,14 +45,61 @@ export default function Home() {
     }
   };
 
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage.role === 'assistant') {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(lastMessage.content);
+      utterance.lang = 'ru-RU';
+      synth.speak(utterance);
+    }
+  }, [messages]);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
+  const startListening = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error('Ваш браузер не поддерживает голосовой ввод!', { position: 'top-right' });
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ru-RU';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event:any) => {
+      const transcript = event.results[0][0].transcript;
+      setMessage(transcript);
+    };
+
+    recognition.onerror = (event:any) => {
+      console.log('Ошибка распознавания:', event.error);
+      toast.error('Ошибка голосового ввода!', { position: 'top-right' });
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
+
   return (
-      <div className="h-screen flex items-center justify-center flex-col gap-10 w-full  pl-8 pt-6 pr-8">
+      <div className="h-screen flex items-center justify-center flex-col gap-10 w-full pl-8 pt-6 pr-8">
         <ToastContainer />
         <div className="flex flex-col gap-3 h-[75%] overflow-scroll overflow-x-hidden w-full">
           {messages.map((message, index) => (
@@ -63,24 +111,30 @@ export default function Home() {
           ))}
           <div ref={messagesEndRef} />
         </div>
-        <div className="relative w-full p-2">
+
+        <div className="relative w-full p-2 flex items-center">
           <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               type="text"
-              placeholder="Enter your Message"
+              placeholder="Введите сообщение"
               onKeyDown={async (e) => {
                 if (e.key === 'Enter') {
                   await handleMessage();
                 }
               }}
-              className="input input-bordered w-full  px-6"
+              className="input input-bordered w-full px-6"
+          />
+          <MicrophoneIcon
+              className={`w-6 h-6 mx-2 cursor-pointer ${isListening ? 'text-red-500' : 'text-gray-500 hover:text-blue-600'}`}
+              onClick={startListening}
           />
           <PaperAirplaneIcon
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-500 hover:text-blue-600 cursor-pointer"
+              className="w-6 h-6 text-gray-500 hover:text-blue-600 cursor-pointer"
               onClick={async () => await handleMessage()}
           />
         </div>
       </div>
   );
 }
+
