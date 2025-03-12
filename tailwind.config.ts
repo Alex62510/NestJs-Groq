@@ -21,7 +21,6 @@ const config: ExtendedConfig = {
       },
     },
   },
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
     themes: ["dark"],
