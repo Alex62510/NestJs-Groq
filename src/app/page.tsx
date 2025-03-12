@@ -66,6 +66,7 @@ export default function Home() {
   }, [messages]);
 
   const startListening = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       toast.error('Ваш браузер не поддерживает голосовой ввод!', { position: 'top-right' });
@@ -80,12 +81,12 @@ export default function Home() {
     recognition.onstart = () => {
       setIsListening(true);
     };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onresult = (event:any) => {
       const transcript = event.results[0][0].transcript;
       setMessage(transcript);
     };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
     recognition.onerror = (event:any) => {
       console.log('Ошибка распознавания:', event.error);
       toast.error('Ошибка голосового ввода!', { position: 'top-right' });
