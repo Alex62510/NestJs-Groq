@@ -7,6 +7,7 @@ import { PaperAirplaneIcon, MicrophoneIcon } from "@heroicons/react/24/solid";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 export default function Home() {
   const [messages, setMessages] = useState<ChatCompletionMessage[]>([]);
   const [message, setMessage] = useState('');
@@ -66,7 +67,11 @@ export default function Home() {
   }, [messages]);
 
   const startListening = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition =
+        (window as unknown as { SpeechRecognition: typeof window.SpeechRecognition; webkitSpeechRecognition: typeof window.SpeechRecognition })
+            .SpeechRecognition ||
+        (window as unknown as { SpeechRecognition: typeof window.SpeechRecognition; webkitSpeechRecognition: typeof window.SpeechRecognition })
+            .webkitSpeechRecognition;
     if (!SpeechRecognition) {
       toast.error('Ваш браузер не поддерживает голосовой ввод!', { position: 'top-right' });
       return;
@@ -81,12 +86,22 @@ export default function Home() {
       setIsListening(true);
     };
 
-    recognition.onresult = (event:any) => {
-      const transcript = event.results[0][0].transcript;
-      setMessage(transcript);
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+
+      const resultsArray = Array.from(event.results);
+      if (resultsArray.length > 0) {
+        const result = resultsArray[0];
+
+        if (Array.isArray(result) && result.length > 0) {
+          const transcript = result[0].transcript;
+          setMessage(transcript);
+        }
+      }
     };
 
-    recognition.onerror = (event:any) => {
+
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.log('Ошибка распознавания:', event.error);
       toast.error('Ошибка голосового ввода!', { position: 'top-right' });
     };
