@@ -66,55 +66,55 @@ export default function Home() {
     }
   }, [messages]);
 
-  const startListening = () => {
-    const SpeechRecognition =
-        (window as unknown as { SpeechRecognition: typeof window.SpeechRecognition; webkitSpeechRecognition: typeof window.SpeechRecognition })
-            .SpeechRecognition ||
-        (window as unknown as { SpeechRecognition: typeof window.SpeechRecognition; webkitSpeechRecognition: typeof window.SpeechRecognition })
-            .webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toast.error('Ваш браузер не поддерживает голосовой ввод!', { position: 'top-right' });
-      return;
-    }
+  // const startListening = () => {
+  //   const SpeechRecognition =
+  //       (window as unknown as { SpeechRecognition: typeof window.SpeechRecognition; webkitSpeechRecognition: typeof window.SpeechRecognition })
+  //           .SpeechRecognition ||
+  //       (window as unknown as { SpeechRecognition: typeof window.SpeechRecognition; webkitSpeechRecognition: typeof window.SpeechRecognition })
+  //           .webkitSpeechRecognition;
+  //   if (!SpeechRecognition) {
+  //     toast.error('Ваш браузер не поддерживает голосовой ввод!', { position: 'top-right' });
+  //     return;
+  //   }
+  //
+  //   const recognition = new SpeechRecognition();
+  //   recognition.lang = 'ru-RU';
+  //   recognition.interimResults = false;
+  //   recognition.maxAlternatives = 1;
+  //
+  //   recognition.onstart = () => {
+  //     setIsListening(true);
+  //   };
+  //
+  //   recognition.onresult = (event: SpeechRecognitionEvent) => {
+  //
+  //     const resultsArray = Array.from(event.results);
+  //     if (resultsArray.length > 0) {
+  //       const result = resultsArray[0];
+  //
+  //       if (Array.isArray(result) && result.length > 0) {
+  //         const transcript = result[0].transcript;
+  //         setMessage(transcript);
+  //       }
+  //     }
+  //   };
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'ru-RU';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-    };
-
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
-
-      const resultsArray = Array.from(event.results);
-      if (resultsArray.length > 0) {
-        const result = resultsArray[0];
-
-        if (Array.isArray(result) && result.length > 0) {
-          const transcript = result[0].transcript;
-          setMessage(transcript);
-        }
-      }
-    };
 
 
-
-    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      console.log('Ошибка распознавания:', event.error);
-      toast.error('Ошибка голосового ввода!', { position: 'top-right' });
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognition.start();
-  };
+    // recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+    //   console.log('Ошибка распознавания:', event.error);
+    //   toast.error('Ошибка голосового ввода!', { position: 'top-right' });
+    // };
+    //
+    // recognition.onend = () => {
+    //   setIsListening(false);
+    // };
+    //
+    // recognition.start();
+  // };
 
   return (
-      <div className="h-screen flex items-center justify-center flex-col gap-10 w-full pl-8 pt-6 pr-8">
+      <div className="h-screen flex items-center justify-center flex-col gap-10 w-full pl-4 pt-6 pr-4">
         <ToastContainer />
         <div className="flex flex-col gap-3 h-[75%] overflow-scroll overflow-x-hidden w-full">
           {messages.map((message, index) => (
@@ -127,7 +127,7 @@ export default function Home() {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="relative w-full p-2  gap-4 flex items-center">
+        <div className="relative w-full p-1  gap-2 flex items-center">
           <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -140,10 +140,10 @@ export default function Home() {
               }}
               className="input input-bordered w-full px-6"
           />
-          <MicrophoneIcon
-              className={`w-6 h-6 mx-2 cursor-pointer ${isListening ? 'text-red-500' : 'text-gray-500 hover:text-blue-600'}`}
-              onClick={startListening}
-          />
+          {/*<MicrophoneIcon*/}
+          {/*    className={`w-6 h-6 mx-2 cursor-pointer ${isListening ? 'text-red-500' : 'text-gray-500 hover:text-blue-600'}`}*/}
+          {/*    onClick={startListening}*/}
+          {/*/>*/}
           <PaperAirplaneIcon
               className="w-6 h-6 text-gray-500 hover:text-blue-600 cursor-pointer"
               onClick={async () => await handleMessage()}
