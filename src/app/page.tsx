@@ -126,7 +126,7 @@ export default function Home() {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="relative w-full p-1  gap-2 flex items-center">
+        <div className="relative w-full p-1  gap-4 flex items-center">
           <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
