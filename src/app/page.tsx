@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { ChatCompletionMessage } from '@/app/chat-completion-message.interface';
+import {useEffect, useRef, useState} from 'react';
+import {ChatCompletionMessage} from '@/app/chat-completion-message.interface';
 import createChatCompletion from '@/app/createChatCompletion';
-import { PaperAirplaneIcon, MicrophoneIcon } from "@heroicons/react/24/solid";
-import { ToastContainer, toast } from 'react-toastify';
+import {PaperAirplaneIcon} from "@heroicons/react/24/solid";
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatCompletionMessage[]>([]);
   const [message, setMessage] = useState('');
-  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleMessage = async () => {
